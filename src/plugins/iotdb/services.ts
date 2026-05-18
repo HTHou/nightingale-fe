@@ -53,7 +53,9 @@ export function getDsQuery(
       query: string;
       from: string;
       to: string;
+      interval?: number;
       keys: {
+        valueKey?: string;
         metricKey: string;
         labelKey: string;
         timeKey?: string;
@@ -76,6 +78,7 @@ export function getLogsQuery(
       query: string;
       from: string;
       to: string;
+      interval?: number;
       keys: {
         timeFormat: string;
       };

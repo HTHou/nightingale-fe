@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import TimeRangePicker, { IRawTimeRange, parseRange } from '@/components/TimeRangePicker';
 import Timeseries from '@/pages/dashboard/Renderer/Renderer/Timeseries';
 import { getDsQuery } from '../../services';
-import { getSerieName } from '../../utils';
+import { getSerieName, normalizeInterval, normalizeQueryKeys } from '../../utils';
 
 export default function GraphPreview({ cate, datasourceValue, query }) {
   const { t } = useTranslation('db_iotdb');
@@ -49,14 +49,10 @@ export default function GraphPreview({ cate, datasourceValue, query }) {
         query: _.map([query], (q) => {
           return {
             query: q.query,
-            keys: {
-              metricKey: _.isArray(q.keys?.metricKey) ? _.join(q.keys?.metricKey, ' ') : q.keys?.metricKey,
-              labelKey: _.isArray(q.keys?.labelKey) ? _.join(q.keys?.labelKey, ' ') : q.keys?.labelKey,
-              timeKey: q.keys?.timeKey,
-              timeFormat: q.keys?.timeFormat,
-            },
+            keys: normalizeQueryKeys(q.keys),
             from,
             to,
+            interval: normalizeInterval(q.interval, q.interval_unit),
           };
         }),
       })

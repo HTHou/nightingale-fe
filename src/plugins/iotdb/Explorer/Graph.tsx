@@ -9,7 +9,7 @@ import { DatasourceCateEnum } from '@/utils/constant';
 import Timeseries from '@/pages/dashboard/Renderer/Renderer/Timeseries';
 import LineGraphStandardOptions from '@/components/PromGraphCpt/components/GraphStandardOptions';
 import AdvancedSettings from '../components/AdvancedSettings';
-import { getSerieName } from '../utils';
+import { getIntervalSeconds, getSerieName, normalizeQueryKeys } from '../utils';
 import { getDsQuery } from '../services';
 import { cacheDefaultValues } from './index';
 
@@ -60,6 +60,7 @@ export default function Graph(props: Props) {
       const parsedRange = parseRange(range);
       const start = moment(parsedRange.start).toISOString();
       const end = moment(parsedRange.end).toISOString();
+      const interval = getIntervalSeconds(range, { maxDataPoints: 600 });
       cacheDefaultValues(datasourceCate, datasourceValue, query);
       getDsQuery({
         cate: datasourceCate,
@@ -69,12 +70,8 @@ export default function Graph(props: Props) {
             query,
             from: start,
             to: end,
-            keys: {
-              metricKey: _.join(keys?.metricKey, ' '),
-              labelKey: _.join(keys?.labelKey, ' '),
-              timeKey: keys?.timeKey,
-              timeFormat: keys?.timeFormat,
-            },
+            interval,
+            keys: normalizeQueryKeys(keys),
           },
         ],
       })
